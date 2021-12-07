@@ -46,11 +46,16 @@ fn main() {
         std::env::var("SHELL").unwrap_or(String::new())
     ));
     rustfetch.push(format!(
-        "\x1B[1;92;127m    .ossssssssssssssssssssssssssssso.      DE:\x1B[0m {}",
-        std::env::var("XDG_CURRENT_DESKTOP").unwrap_or(String::new())
+        "\x1B[1;92;127m    .ossssssssssssssssssssssssssssso.      Terminal:\x1B[0m {}",
+        std::env::var("TERM").unwrap_or(String::new())
     ));
     rustfetch.push(format!(
-        "\x1B[1;92;127m   :sssssssssssssssssssssssssssssssss:     CPU:\x1B[0m {} {}",
+        "\x1B[1;92;127m   :sssssssssssssssssssssssssssssssss:     DE:\x1B[0m {}",
+        std::env::var("XDG_CURRENT_DESKTOP").unwrap_or(String::new())
+    ));
+
+    rustfetch.push(format!(
+        "\x1B[1;92;127m  /sssssssssssssssssssssssssssssssssss/    CPU:\x1B[0m {} {}",
         sys.global_processor_info().brand(),
         sys.global_processor_info().name()
     ));
@@ -68,15 +73,14 @@ fn main() {
     }
 
     rustfetch.push(format!(
-        "\x1B[1;92;127m  /sssssssssssssssssssssssssssssssssss/    Memory:\x1B[0m {} {}",
+        "\x1B[1;92;127m :sssssssssssssoosssssssoosssssssssssss:   Memory:\x1B[0m {} {}",
         memory, size
     ));
     rustfetch.push(format!(
-        "\x1B[1;92;127m :sssssssssssssoosssssssoosssssssssssss:   Locale:\x1B[0m {}",
+        "\x1B[1;92;127m osssssssssssssoosssssssoossssssssssssso   Locale:\x1B[0m {}",
         std::env::var("LANG").unwrap_or(String::new())
     ));
-    rustfetch.push("\x1B[1;92;127m osssssssssssssoosssssssoossssssssssssso ".to_string());
-    rustfetch.push(" osssssssssssyyyyhhhhhhhyyyyssssssssssso ".to_string());
+    rustfetch.push("\x1B[1;92;127m osssssssssssyyyyhhhhhhhyyyyssssssssssso ".to_string());
     rustfetch.push(" /yyyyyyhhdmmmmNNNNNNNNNNNmmmmdhhyyyyyy/ ".to_string());
     rustfetch.push("  smmmNNNNNNNNNNNNNNNNNNNNNNNNNNNNNmmms  ".to_string());
     rustfetch.push("   /dNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNd/   ".to_string());
