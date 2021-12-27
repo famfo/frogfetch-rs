@@ -4,7 +4,16 @@ use std::process::Command;
 
 pub fn get_info() {
     // Get the current user using the $USER enviromental variable
-    let user = std::env::var("USER").unwrap_or(String::new());
+    let user = String::from_utf8(
+        Command::new("whoami")
+            .output()
+            .expect("Failed to execute whoami")
+            .stdout
+            .to_vec(),
+    )
+    .unwrap_or(String::new())
+    .trim()
+    .to_string();
 
     // Get the hostname using hostname
     let hostname = String::from_utf8(
