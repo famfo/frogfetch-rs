@@ -1,3 +1,13 @@
+// Allow some clippy warnings since I don't know how to write the stuff differently
+// Allow too_many_arguments because I want to pass all the values to print_frog in one
+// Allow needless_pass_by_value because I get my values with String::from_utf8()
+// Allow too many lines because it's a stupid lint
+#![allow(
+    clippy::too_many_arguments,
+    clippy::needless_pass_by_value,
+    clippy::too_many_lines
+)]
+
 mod os_specific;
 
 fn main() {
@@ -10,7 +20,7 @@ fn main() {
     #[cfg(target_os = "freebsd")]
     os_specific::freebsd::get_info();
 
-    // TODO: Get it to work on Windows, MacOS, Android and BSD
+    // TODO: Get it to work on Windows, MacOS, and other BSDs
     #[cfg(not(any(target_os = "linux", target_os = "android", target_os = "freebsd")))]
     todo!();
 }
@@ -28,57 +38,58 @@ fn print_frog(
     memory: String,
     lang: String,
 ) {
-    let mut rustfetch: Vec<String> = Vec::new();
+    let mut frogfetch: Vec<String> = Vec::new();
 
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m       .---.`               `.---.         {}\x1B[0m@\x1B[1;92;127m{}\x1B[0m",
         user,
         hostname,
     ));
-    rustfetch.push(format!(
-        "\x1B[1;92;127m    `/syhhhyso-           -osyhhhys/`      \x1B[0m-----------------------------------"
-    ));
-    rustfetch.push(format!(
+    frogfetch.push(
+        "\x1B[1;92;127m    `/syhhhyso-           -osyhhhys/`      \x1B[0m-----------------------------------".to_string());
+    frogfetch.push(format!(
         "\x1B[1;92;127m   .syNMdhNNhss/``.---.``/sshNNhdMNys.     OS:\x1B[0m {} {}",
         os, architecture,
     ));
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m   +sdMh.`+MNsssssssssssssssNM+`.hMds+     Kernel:\x1B[0m {}",
         kernel,
     ));
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m   :syNNdhNNhssssssssssssssshNNhdNNys:     Uptime:\x1B[0m {}",
         uptime,
     ));
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m    /ssyhhhysssssssssssssssssyhhhyss/      Shell:\x1B[0m {}",
         shell,
     ));
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m    .ossssssssssssssssssssssssssssso.      Terminal:\x1B[0m {}",
         term,
     ));
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m   :sssssssssssssssssssssssssssssssss:     CPU:\x1B[0m {}",
         cpu,
     ));
 
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m  /sssssssssssssssssssssssssssssssssss/    System memory:\x1B[0m {}",
         memory,
     ));
-    rustfetch.push(format!(
+    frogfetch.push(format!(
         "\x1B[1;92;127m :sssssssssssssoosssssssoosssssssssssss:   Locale:\x1B[0m {}",
         lang,
     ));
-    rustfetch.push("\x1B[1;92;127m osssssssssssssoosssssssoossssssssssssso".to_string());
-    rustfetch.push(" osssssssssssyyyyhhhhhhhyyyyssssssssssso ".to_string());
-    rustfetch.push(" /yyyyyyhhdmmmmNNNNNNNNNNNmmmmdhhyyyyyy/ ".to_string());
-    rustfetch.push("  smmmNNNNNNNNNNNNNNNNNNNNNNNNNNNNNmmms  ".to_string());
-    rustfetch.push("   /dNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNd/   ".to_string());
-    rustfetch.push("    `:sdNNNNNNNNNNNNNNNNNNNNNNNNNds:`    ".to_string());
-    rustfetch.push("       `-+shdNNNNNNNNNNNNNNNdhs+-`       ".to_string());
-    rustfetch.push("             `.-:///////:-.`             \x1B[0m".to_string());
+    frogfetch.push("\x1B[1;92;127m osssssssssssssoosssssssoossssssssssssso".to_string());
+    frogfetch.push(" osssssssssssyyyyhhhhhhhyyyyssssssssssso ".to_string());
+    frogfetch.push(" /yyyyyyhhdmmmmNNNNNNNNNNNmmmmdhhyyyyyy/ ".to_string());
+    frogfetch.push("  smmmNNNNNNNNNNNNNNNNNNNNNNNNNNNNNmmms  ".to_string());
+    frogfetch.push("   /dNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNd/   ".to_string());
+    frogfetch.push("    `:sdNNNNNNNNNNNNNNNNNNNNNNNNNds:`    ".to_string());
+    frogfetch.push("       `-+shdNNNNNNNNNNNNNNNdhs+-`       ".to_string());
+    frogfetch.push("             `.-:///////:-.`             \x1B[0m".to_string());
 
-    rustfetch.iter().for_each(|line| println!("{}", line));
+    for line in frogfetch {
+        println!("{}", line);
+    }
 }

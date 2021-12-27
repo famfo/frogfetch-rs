@@ -8,10 +8,9 @@ pub fn get_info() {
         Command::new("whoami")
             .output()
             .expect("Failed to execute whoami")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -20,10 +19,9 @@ pub fn get_info() {
         Command::new("hostname")
             .output()
             .expect("Failed to execute hostname")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -36,9 +34,8 @@ pub fn get_info() {
                 .output()
                 .expect("Failed to execute uname -o")
                 .stdout
-                .to_vec(),
         )
-        .unwrap_or(String::new())
+        .unwrap_or_default()
         .trim(),
         String::from_utf8(
             Command::new("getprop")
@@ -46,9 +43,8 @@ pub fn get_info() {
                 .output()
                 .expect("Failed to execute getprop")
                 .stdout
-                .to_vec()
         )
-        .unwrap_or(String::new())
+        .unwrap_or_default()
         .trim(),
     );
 
@@ -58,10 +54,9 @@ pub fn get_info() {
             .arg("-m")
             .output()
             .expect("Failed to execute uname -m")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -71,10 +66,9 @@ pub fn get_info() {
             .arg("-r")
             .output()
             .expect("Failed to execute uname -r")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -84,10 +78,9 @@ pub fn get_info() {
             .arg("-p")
             .output()
             .expect("Failed to execute uptime -p")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -95,10 +88,10 @@ pub fn get_info() {
     let uptime = &up_uptime.as_str()[3..];
 
     // Get the default shell using the $SHELL enviromental variable
-    let shell = std::env::var("SHELL").unwrap_or(String::new());
+    let shell = std::env::var("SHELL").unwrap_or_default();
 
     // Get the default terminal using the $TERM enviromental variable
-    let term = std::env::var("TERM").unwrap_or(String::new());
+    let term = std::env::var("TERM").unwrap_or_default();
 
     // Get the CPU name and manufacturer from /proc/cpuinfo using the command:
     // grep -m 1 'model name' /proc/cpuinfo | awk -F: '{ print $2 }'
@@ -159,9 +152,8 @@ pub fn get_info() {
                 .as_slice()
                 .to_vec(),
         )
-        .unwrap_or(String::new())
-        .trim()
-        .to_string(),
+        .unwrap_or_default()
+        .trim(),
         String::from_utf8(
             awk1.wait_with_output()
                 .expect("Failed to wait on awk")
@@ -169,9 +161,8 @@ pub fn get_info() {
                 .as_slice()
                 .to_vec(),
         )
-        .unwrap_or(String::new())
+        .unwrap_or_default()
         .trim()
-        .to_string(),
     );
 
     // Get the total memory from /proc/meminfo using the command:
@@ -200,12 +191,12 @@ pub fn get_info() {
             .as_slice()
             .to_vec(),
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
     // Get the system language using the $LANG enviromental variable
-    let lang = std::env::var("LANG").unwrap_or(String::new());
+    let lang = std::env::var("LANG").unwrap_or_default();
 
     crate::print_frog(
         user,

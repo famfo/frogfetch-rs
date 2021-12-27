@@ -4,17 +4,16 @@ use std::process::Command;
 
 pub fn get_info() {
     // Get the current user using the $USER enviromental variable
-    let user = std::env::var("USER").unwrap_or(String::new());
+    let user = std::env::var("USER").unwrap_or_default();
 
     // Get the hostname using hostname
     let hostname = String::from_utf8(
         Command::new("hostname")
             .output()
             .expect("Failed to execute hostname")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -25,10 +24,9 @@ pub fn get_info() {
             .arg("kern.ostype")
             .output()
             .expect("Failed to execute sysctl")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -38,10 +36,9 @@ pub fn get_info() {
             .arg("-m")
             .output()
             .expect("Failed to execute uname")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -52,24 +49,22 @@ pub fn get_info() {
             .arg("kern.osrelease")
             .output()
             .expect("Failed to execute sysctl")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
-    // UPTIME: TODO
+    // Get the uptime by subtracting the time since the boot from the current time, and then converting the seconds to days, hours and mintues
     let uptime = String::from_utf8(
         Command::new("sysctl")
             .arg("-n")
             .arg("kern.boottime")
             .output()
             .expect("Failed to execute sysctl")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -79,21 +74,20 @@ pub fn get_info() {
                 .arg("+%s")
                 .output()
                 .expect("Failed to execute date")
-                .stdout
-                .to_vec(),
+                .stdout,
         )
-        .unwrap_or(String::new())
+        .unwrap_or_default()
         .trim(),
     )
     .unwrap_or(0);
 
     let uptime = current_time
-        - std::str::FromStr::from_str(uptime[8..].split_once(',').unwrap_or(("", "")).0)
+        - std::str::FromStr::from_str(super::awk(uptime, 8, ',', 0).as_str())
             .unwrap_or(current_time);
 
-    let days = (uptime / 60 / 60 / 24) as u32;
-    let hours = (uptime / 60 / 60) as u32;
-    let minutes = (uptime / 60 % 60) as u32;
+    let days = (uptime / 60 / 60 / 24) as i32;
+    let hours = (uptime / 60 / 60) as i32;
+    let minutes = (uptime / 60 % 60) as i32;
 
     let uptime = {
         if days != 0 {
@@ -106,10 +100,10 @@ pub fn get_info() {
     };
 
     // Get the default shell using the $SHELL enviromental variable
-    let shell = std::env::var("SHELL").unwrap_or(String::new());
+    let shell = std::env::var("SHELL").unwrap_or_default();
 
     // Get the default terminal using the $TERM enviromental variable
-    let term = std::env::var("TERM").unwrap_or(String::new());
+    let term = std::env::var("TERM").unwrap_or_default();
 
     // Get the CPU manufacturer and model using the sysctl -n hw.model command
     let cpu = String::from_utf8(
@@ -118,10 +112,9 @@ pub fn get_info() {
             .arg("hw.model")
             .output()
             .expect("Failed to execute sysctl")
-            .stdout
-            .to_vec(),
+            .stdout,
     )
-    .unwrap_or(String::new())
+    .unwrap_or_default()
     .trim()
     .to_string();
 
@@ -133,10 +126,9 @@ pub fn get_info() {
                 .arg("hw.physmem")
                 .output()
                 .expect("Failed to execute sysctl")
-                .stdout
-                .to_vec(),
+                .stdout,
         )
-        .unwrap_or(String::new())
+        .unwrap_or_default()
         .trim(),
     )
     .unwrap_or(0)
@@ -146,7 +138,7 @@ pub fn get_info() {
     memory.push_str(" kB");
 
     // Get the system language using the $LANG enviromental variable
-    let lang = std::env::var("LANG").unwrap_or(String::new());
+    let lang = std::env::var("LANG").unwrap_or_default();
 
     crate::print_frog(
         user,
@@ -154,7 +146,7 @@ pub fn get_info() {
         os,
         architecture,
         kernel,
-        uptime.to_string(),
+        uptime,
         shell,
         term,
         cpu,

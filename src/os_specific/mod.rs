@@ -20,3 +20,14 @@ pub mod android;
 
 #[cfg(test)]
 pub mod linux;
+
+// So we don't have to spawn another external process for awk
+// Allow dead code for this function since in specific targets we don't need awk
+#[allow(dead_code)]
+pub fn awk(str: String, start: usize, split: char, output: usize) -> String {
+    if output == 0 {
+        String::from(str[start..].split_once(split).unwrap_or(("", "")).0)
+    } else {
+        String::from(str[start..].split_once(split).unwrap_or(("", "")).1)
+    }
+}

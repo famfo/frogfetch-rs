@@ -1,5 +1,7 @@
 # frogfetch-rs
-This is a stupid little project I did because I was bored, maybe I have the motivation somewhen to improve it.
+Neofetch but frogged and in rust
+
+If you have any problems, feel free to open an issue.
 
 ### Building/Running
 1. Install [Rust](https://rustup.rs/)
