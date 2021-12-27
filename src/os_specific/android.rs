@@ -93,7 +93,7 @@ pub fn get_info() {
 
     // Get the CPU name and manufacturer from /proc/cpuinfo using the command:
     // grep -m 1 'model name' /proc/cpuinfo | awk -F: '{ print $2 }'
-    let lscpu = std::process::Command::new("lscpu")
+    let lscpu0 = std::process::Command::new("lscpu")
         .stdout(std::process::Stdio::piped())
         .spawn()
         .expect("Failed to execute lscpu")
@@ -102,7 +102,7 @@ pub fn get_info() {
 
     let grep0 = std::process::Command::new("grep")
         .arg("Vendor ID")
-        .stdin(std::process::Stdio::from(&lscpu))
+        .stdin(std::process::Stdio::from(lscpu0))
         .stdout(std::process::Stdio::piped())
         .spawn()
         .expect("Failed to execute grep")
@@ -117,9 +117,16 @@ pub fn get_info() {
         .spawn()
         .expect("Failed to execute awk");
 
+    let lscpu1 = std::process::Command::new("lscpu")
+        .stdout(std::process::Stdio::piped())
+        .spawn()
+        .expect("Failed to execute lscpu")
+        .stdout
+        .expect("Failed to open grep stdout");
+
     let grep1 = std::process::Command::new("grep")
         .arg("Model name")
-        .stdin(std::process::Stdio::from(&lscpu))
+        .stdin(std::process::Stdio::from(lscpu1))
         .stdout(std::process::Stdio::piped())
         .spawn()
         .expect("Failed to execute grep")
