@@ -87,9 +87,9 @@ pub fn get_info() {
     )
     .unwrap_or(0);
 
-    let uptime = std::str::FromStr::from_str(uptime[8..].split_once(',').unwrap_or(("", "")).0)
-        .unwrap_or(current_time)
-        - current_time;
+    let uptime = current_time
+        - std::str::FromStr::from_str(uptime[8..].split_once(',').unwrap_or(("", "")).0)
+            .unwrap_or(current_time);
 
     let days = (uptime / 60 / 60 / 24) as u32;
     let hours = (uptime / 60 / 60) as u32;
