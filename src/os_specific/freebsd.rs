@@ -97,7 +97,7 @@ pub fn get_info() {
         .trim(),
     )
     .unwrap_or(0)
-        / 1024)
+        / 1048576)
         .to_string();
 
     // Get the system language using the $LANG enviromental variable
