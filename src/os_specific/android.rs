@@ -93,11 +93,16 @@ pub fn get_info() {
 
     // Get the CPU name and manufacturer from /proc/cpuinfo using the command:
     // grep -m 1 'model name' /proc/cpuinfo | awk -F: '{ print $2 }'
+    let lscpu = std::process::Command::new("lscpu")
+        .stdout(std::process::Stdio::piped())
+        .spawn()
+        .expect("Failed to execute lscpu")
+        .stdout
+        .expect("Failed to open grep stdout");
+
     let grep = std::process::Command::new("grep")
-        .arg("-m")
-        .arg("1")
-        .arg("model name")
-        .arg("/proc/cpuinfo")
+        .arg("Vendor ID")
+        .stdin(std::process::Stdio::from(lscpu))
         .stdout(std::process::Stdio::piped())
         .spawn()
         .expect("Failed to execute grep")
