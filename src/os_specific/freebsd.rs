@@ -37,7 +37,7 @@ pub fn get_info() {
         Command::new("uname")
             .arg("-m")
             .output()
-            .expect("Failed to execute uname -m")
+            .expect("Failed to execute uname")
             .stdout
             .to_vec(),
     )
@@ -60,7 +60,50 @@ pub fn get_info() {
     .to_string();
 
     // UPTIME: TODO
-    let uptime = "";
+    let uptime = String::from_utf8(
+        Command::new("sysctl")
+            .arg("-n")
+            .arg("kern.boottime")
+            .output()
+            .expect("Failed to execute sysctl")
+            .stdout
+            .to_vec(),
+    )
+    .unwrap_or(String::new())
+    .trim()
+    .to_string();
+
+    let current_time = std::str::FromStr::from_str(
+        String::from_utf8(
+            Command::new("date")
+                .arg("+%s")
+                .output()
+                .expect("Failed to execute date")
+                .stdout
+                .to_vec(),
+        )
+        .unwrap_or(String::new())
+        .trim(),
+    )
+    .unwrap_or(0);
+
+    let uptime = std::str::FromStr::from_str(uptime[8..].split_once(',').unwrap_or(("", "")).0)
+        .unwrap_or(current_time)
+        - current_time;
+
+    let days = (uptime / 60 / 60 / 24) as u32;
+    let hours = (uptime / 60 / 60) as u32;
+    let minutes = (uptime / 60 % 60) as u32;
+
+    let uptime = {
+        if days != 0 {
+            format!("{} days, {} hours, {} minutes", days, hours, minutes)
+        } else if hours != 0 {
+            format!("{} hours, {} minutes", hours, minutes)
+        } else {
+            format!("{} minutes", minutes)
+        }
+    };
 
     // Get the default shell using the $SHELL enviromental variable
     let shell = std::env::var("SHELL").unwrap_or(String::new());
@@ -74,7 +117,7 @@ pub fn get_info() {
             .arg("-n")
             .arg("hw.model")
             .output()
-            .expect("Failed to execute uptime -p")
+            .expect("Failed to execute sysctl")
             .stdout
             .to_vec(),
     )
