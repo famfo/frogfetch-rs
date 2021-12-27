@@ -6,12 +6,11 @@ pub fn get_info() {
     // Get the current user using the $USER enviromental variable
     let user = std::env::var("USER").unwrap_or(String::new());
 
-    // Get the hostname from /etc/Hostname
+    // Get the hostname using hostname
     let hostname = String::from_utf8(
-        Command::new("cat")
-            .arg("/etc/hostname")
+        Command::new("hostname")
             .output()
-            .expect("Failed to execute cat /etc/hostname")
+            .expect("Failed to execute hostname")
             .stdout
             .to_vec(),
     )
@@ -19,12 +18,13 @@ pub fn get_info() {
     .trim()
     .to_string();
 
-    // Get the os using uname -s
+    // Get the os using sysctl -n kern.ostype
     let os = String::from_utf8(
-        Command::new("uname")
-            .arg("-o")
+        Command::new("sysctl")
+            .arg("-n")
+            .arg("kern.ostype")
             .output()
-            .expect("Failed to execute uname -s")
+            .expect("Failed to execute sysctl")
             .stdout
             .to_vec(),
     )
@@ -45,12 +45,13 @@ pub fn get_info() {
     .trim()
     .to_string();
 
-    // Get the kernel name using uname -r
+    // Get the kernel name using sysctl -n kern.osrelease
     let kernel = String::from_utf8(
-        Command::new("uname")
-            .arg("-r")
+        Command::new("sysctl")
+            .arg("-n")
+            .arg("kern.osrelease")
             .output()
-            .expect("Failed to execute uname -r")
+            .expect("Failed to execute sysctl")
             .stdout
             .to_vec(),
     )
@@ -58,21 +59,8 @@ pub fn get_info() {
     .trim()
     .to_string();
 
-    // Get the uptime using the uptime command
-    let up_uptime = String::from_utf8(
-        Command::new("uptime")
-            .arg("-p")
-            .output()
-            .expect("Failed to execute uptime -p")
-            .stdout
-            .to_vec(),
-    )
-    .unwrap_or(String::new())
-    .trim()
-    .to_string();
-
-    // Trim out the first 3 chars of the uptime output (up )
-    let uptime = ""; //&up_uptime.as_str()[3..];
+    // UPTIME: TODO
+    let uptime = "";
 
     // Get the default shell using the $SHELL enviromental variable
     let shell = std::env::var("SHELL").unwrap_or(String::new());
