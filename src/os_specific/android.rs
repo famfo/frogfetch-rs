@@ -100,7 +100,7 @@ pub fn get_info() {
         .stdout
         .expect("Failed to open grep stdout");
 
-    let grep = std::process::Command::new("grep")
+    let grep0 = std::process::Command::new("grep")
         .arg("Vendor ID")
         .stdin(std::process::Stdio::from(lscpu))
         .stdout(std::process::Stdio::piped())
@@ -109,24 +109,54 @@ pub fn get_info() {
         .stdout
         .expect("Failed to open grep stdout");
 
-    let awk = std::process::Command::new("awk")
+    let awk0 = std::process::Command::new("awk")
         .arg("-F:")
         .arg("{ print $2 }")
-        .stdin(std::process::Stdio::from(grep))
+        .stdin(std::process::Stdio::from(grep0))
         .stdout(std::process::Stdio::piped())
         .spawn()
         .expect("Failed to execute awk");
 
-    let cpu = String::from_utf8(
-        awk.wait_with_output()
-            .expect("Failed to wait on awk")
-            .stdout
-            .as_slice()
-            .to_vec(),
-    )
-    .unwrap_or(String::new())
-    .trim()
-    .to_string();
+    let grep1 = std::process::Command::new("grep")
+        .arg("Model name")
+        .stdin(std::process::Stdio::from(lscpu))
+        .stdout(std::process::Stdio::piped())
+        .spawn()
+        .expect("Failed to execute grep")
+        .stdout
+        .expect("Failed to open grep stdout");
+
+    let awk1 = std::process::Command::new("awk")
+        .arg("-F:")
+        .arg("{ print $2 }")
+        .stdin(std::process::Stdio::from(grep1))
+        .stdout(std::process::Stdio::piped())
+        .spawn()
+        .expect("Failed to execute awk");
+
+    let cpu = format!(
+        "{} {}",
+        String::from_utf8(
+            awk0.wait_with_output()
+                .expect("Failed to wait on awk")
+                .stdout
+                .as_slice()
+                .to_vec(),
+        )
+        .unwrap_or(String::new())
+        .trim()
+        .to_string(),
+        String::from_utf8(
+            awk1.wait_with_output()
+                .expect("Failed to wait on awk")
+                .stdout
+                .as_slice()
+                .to_vec(),
+        )
+        .unwrap_or(String::new())
+        .trim()
+        .to_string(),
+    );
 
     // Get the total memory from /proc/meminfo using the command:
     // grep MemTotal /proc/meminfo | awk -F: '{ print $2 }'
