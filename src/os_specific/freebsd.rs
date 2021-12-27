@@ -72,7 +72,7 @@ pub fn get_info() {
     .to_string();
 
     // Trim out the first 3 chars of the uptime output (up )
-    let uptime = &up_uptime.as_str()[3..];
+    let uptime = ""; //&up_uptime.as_str()[3..];
 
     // Get the default shell using the $SHELL enviromental variable
     let shell = std::env::var("SHELL").unwrap_or(String::new());

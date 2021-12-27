@@ -7,8 +7,8 @@ fn main() {
     #[cfg(target_os = "android")]
     os_specific::android::get_info();
 
-    #[cfg(target_os = "bsd")]
-    os_specific::bsd::get_info();
+    #[cfg(target_os = "freebsd")]
+    os_specific::freebsd::get_info();
 
     // TODO: Get it to work on Windows, MacOS, Android and BSD
     #[cfg(not(any(target_os = "linux", target_os = "android")))]
