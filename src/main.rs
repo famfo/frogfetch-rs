@@ -1,12 +1,15 @@
 mod os_specific;
 
 fn main() {
-    #![cfg(any(target_os = "linux", target_os = "android"))]
-    os_specific::linux_android::get_info();
+    #[cfg(target_os = "linux")]
+    os_specific::linux::get_info();
+
+    #[cfg(target_os = "android")]
+    os_specific::android::get_info();
 
     // TODO: Get it to work on Windows, MacOS, Android and BSD
     #[cfg(not(any(target_os = "linux", target_os = "android")))]
-    unimplemented!();
+    todo!();
 }
 
 fn print_frog(

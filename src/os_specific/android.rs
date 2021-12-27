@@ -6,11 +6,12 @@ pub fn get_info() {
     // Get the current user using the $USER enviromental variable
     let user = std::env::var("USER").unwrap_or(String::new());
 
-    // Get the hostname using hostname
+    // Get the hostname from /etc/Hostname
     let hostname = String::from_utf8(
-        Command::new("hostname")
+        Command::new("cat")
+            .arg("/etc/hostname")
             .output()
-            .expect("Failed to execute uname -s")
+            .expect("Failed to execute cat /etc/hostname")
             .stdout
             .to_vec(),
     )
@@ -19,17 +20,27 @@ pub fn get_info() {
     .to_string();
 
     // Get the os using uname -s
-    let os = String::from_utf8(
-        Command::new("uname")
-            .arg("-s")
-            .output()
-            .expect("Failed to execute uname -s")
-            .stdout
-            .to_vec(),
-    )
-    .unwrap_or(String::new())
-    .trim()
-    .to_string();
+    let os = format!(
+        "{} {}",
+        String::from_utf8(
+            Command::new("uname")
+                .arg("-o")
+                .output()
+                .expect("Failed to execute uname -o")
+                .stdout
+                .to_vec(),
+        )
+        .unwrap_or(String::new())
+        .trim(),
+        String::from_utf8(
+            Command::new("getprop")
+                .arg("ro.build.version.release")
+                .output()
+                .expect("Failed to execute getprop")
+                .stdout
+                .to_vec()
+        )
+    );
 
     // Get the architecture using uname -m
     let architecture = String::from_utf8(
