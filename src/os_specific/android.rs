@@ -102,7 +102,7 @@ pub fn get_info() {
 
     let grep0 = std::process::Command::new("grep")
         .arg("Vendor ID")
-        .stdin(std::process::Stdio::from(lscpu))
+        .stdin(std::process::Stdio::from(&lscpu))
         .stdout(std::process::Stdio::piped())
         .spawn()
         .expect("Failed to execute grep")
@@ -119,7 +119,7 @@ pub fn get_info() {
 
     let grep1 = std::process::Command::new("grep")
         .arg("Model name")
-        .stdin(std::process::Stdio::from(lscpu))
+        .stdin(std::process::Stdio::from(&lscpu))
         .stdout(std::process::Stdio::piped())
         .spawn()
         .expect("Failed to execute grep")
