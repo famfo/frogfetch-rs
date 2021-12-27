@@ -100,7 +100,7 @@ pub fn get_info() {
             .stdout,
     )
     .unwrap_or_default()
-    .trim()[17..]
+    .trim()[16..]
         .to_string();
 
     // Get the system language using the $LANG enviromental variable
