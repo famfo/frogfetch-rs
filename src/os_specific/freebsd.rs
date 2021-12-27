@@ -82,35 +82,23 @@ pub fn get_info() {
     .trim()
     .to_string();
 
-    // Get the total memory from /proc/meminfo using the command:
-    // grep MemTotal /proc/meminfo | awk -F: '{ print $2 }'
-    let grep = std::process::Command::new("grep")
-        .arg("MemTotal")
-        .arg("/proc/meminfo")
-        .stdout(std::process::Stdio::piped())
-        .spawn()
-        .expect("Failed to execute grep")
-        .stdout
-        .expect("Failed to open grep stdout");
-
-    let awk = std::process::Command::new("awk")
-        .arg("-F:")
-        .arg("{ print $2 }")
-        .stdin(std::process::Stdio::from(grep))
-        .stdout(std::process::Stdio::piped())
-        .spawn()
-        .expect("Failed to execute awk");
-
-    let memory = String::from_utf8(
-        awk.wait_with_output()
-            .expect("Failed to wait on awk")
-            .stdout
-            .as_slice()
-            .to_vec(),
+    // Get the total memory in byte using sysctl -n hw.physmem
+    let memory = (std::str::FromStr::from_str(
+        String::from_utf8(
+            Command::new("sysctl")
+                .arg("-n")
+                .arg("hw.physmem")
+                .output()
+                .expect("Failed to execute sysctl")
+                .stdout
+                .to_vec(),
+        )
+        .unwrap_or(String::new())
+        .trim(),
     )
-    .unwrap_or(String::new())
-    .trim()
-    .to_string();
+    .unwrap_or(0)
+        / 1024)
+        .to_string();
 
     // Get the system language using the $LANG enviromental variable
     let lang = std::env::var("LANG").unwrap_or(String::new());
