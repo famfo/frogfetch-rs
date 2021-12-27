@@ -6,12 +6,11 @@ pub fn get_info() {
     // Get the current user using the $USER enviromental variable
     let user = std::env::var("USER").unwrap_or(String::new());
 
-    // Get the hostname from /etc/Hostname
+    // Get the hostname using hostname
     let hostname = String::from_utf8(
-        Command::new("cat")
-            .arg("/etc/hostname")
+        Command::new("hostname")
             .output()
-            .expect("Failed to execute cat /etc/hostname")
+            .expect("Failed to execute hostname")
             .stdout
             .to_vec(),
     )
