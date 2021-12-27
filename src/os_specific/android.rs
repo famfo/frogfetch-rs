@@ -40,6 +40,8 @@ pub fn get_info() {
                 .stdout
                 .to_vec()
         )
+        .unwrap_or(String::new())
+        .trim(),
     );
 
     // Get the architecture using uname -m
