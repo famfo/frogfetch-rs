@@ -83,7 +83,7 @@ pub fn get_info() {
     .to_string();
 
     // Get the total memory in byte using sysctl -n hw.physmem
-    let memory = (std::str::FromStr::from_str(
+    let mut memory = (std::str::FromStr::from_str(
         String::from_utf8(
             Command::new("sysctl")
                 .arg("-n")
@@ -99,6 +99,8 @@ pub fn get_info() {
     .unwrap_or(0)
         / 1024)
         .to_string();
+
+    memory.push_str(" kB");
 
     // Get the system language using the $LANG enviromental variable
     let lang = std::env::var("LANG").unwrap_or(String::new());
