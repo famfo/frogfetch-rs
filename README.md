@@ -6,4 +6,12 @@ This is a stupid little project I did because I was bored, maybe I have the moti
 2. Clone this repo
 3. Run with `cargo run` or build a binary with `cargo build --release`
 
-Note: this currently only works on Linux and will panic on all other operating systems
+### What works?
+- Linux
+- Android
+- FreeBSD
+
+### What am I planning on to get to work?
+- Other BSDs
+- Windows
+- MacOS
