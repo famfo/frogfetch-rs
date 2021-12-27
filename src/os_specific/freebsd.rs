@@ -80,32 +80,14 @@ pub fn get_info() {
     // Get the default terminal using the $TERM enviromental variable
     let term = std::env::var("TERM").unwrap_or(String::new());
 
-    // Get the CPU name and manufacturer from /proc/cpuinfo using the command:
-    // grep -m 1 'model name' /proc/cpuinfo | awk -F: '{ print $2 }'
-    let grep = std::process::Command::new("grep")
-        .arg("-m")
-        .arg("1")
-        .arg("model name")
-        .arg("/proc/cpuinfo")
-        .stdout(std::process::Stdio::piped())
-        .spawn()
-        .expect("Failed to execute grep")
-        .stdout
-        .expect("Failed to open grep stdout");
-
-    let awk = std::process::Command::new("awk")
-        .arg("-F:")
-        .arg("{ print $2 }")
-        .stdin(std::process::Stdio::from(grep))
-        .stdout(std::process::Stdio::piped())
-        .spawn()
-        .expect("Failed to execute awk");
-
+    // Get the CPU manufacturer and model using the sysctl -n hw.model command
     let cpu = String::from_utf8(
-        awk.wait_with_output()
-            .expect("Failed to wait on awk")
+        Command::new("sysctl")
+            .arg("-n")
+            .arg("hw.model")
+            .output()
+            .expect("Failed to execute uptime -p")
             .stdout
-            .as_slice()
             .to_vec(),
     )
     .unwrap_or(String::new())
