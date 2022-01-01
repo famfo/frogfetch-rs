@@ -89,10 +89,10 @@ pub fn get_info() {
 
     let uptime = format!("Boot time: {}:{}:{} at {}-{}-{} (GMT{})", boot_hour, boot_minute, boot_second, boot_day, boot_month, boot_year, time_zone);
 
-    // Get the default shell using the $SHELL enviromental variable
+    // Lie to the Windows users about the shell
     let shell = "Powershell".to_string();
 
-    // Get the default terminal using the $TERM enviromental variable
+    // Lie to the Windows users about the terminal (since this is the only one it works corretctly in anyways)
     let term = "Windows Terminal".to_string();
 
     // Get the CPU name and manufacturer using wmic cpu get name
