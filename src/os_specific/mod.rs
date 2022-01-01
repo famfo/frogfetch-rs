@@ -12,6 +12,10 @@ pub mod android;
 #[cfg(target_os = "freebsd")]
 pub mod freebsd;
 
+#[cfg(not(test))]
+#[cfg(target_os = "windows")]
+pub mod windows;
+
 #[cfg(test)]
 pub mod freebsd;
 
@@ -20,6 +24,9 @@ pub mod android;
 
 #[cfg(test)]
 pub mod linux;
+
+#[cfg(test)]
+pub mod windows;
 
 // So we don't have to spawn another external process for awk
 // Allow dead code for this function since in specific targets we don't need awk

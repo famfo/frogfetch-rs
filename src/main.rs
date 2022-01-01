@@ -20,8 +20,16 @@ fn main() {
     #[cfg(target_os = "freebsd")]
     os_specific::freebsd::get_info();
 
+    #[cfg(target_os = "windows")]
+    os_specific::windows::get_info();
+
     // TODO: Get it to work on Windows, MacOS, and other BSDs
-    #[cfg(not(any(target_os = "linux", target_os = "android", target_os = "freebsd")))]
+    #[cfg(not(any(
+        target_os = "linux",
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "windows"
+    )))]
     todo!();
 }
 
@@ -80,7 +88,7 @@ fn print_frog(
         "\x1B[1;92;127m :sssssssssssssoosssssssoosssssssssssss:   Locale:\x1B[0m {}",
         lang,
     ));
-    frogfetch.push("\x1B[1;92;127m osssssssssssssoosssssssoossssssssssssso".to_string());
+    frogfetch.push("\x1B[1;92;127m osssssssssssssoosssssssoossssssssssssso ".to_string());
     frogfetch.push(" osssssssssssyyyyhhhhhhhyyyyssssssssssso ".to_string());
     frogfetch.push(" /yyyyyyhhdmmmmNNNNNNNNNNNmmmmdhhyyyyyy/ ".to_string());
     frogfetch.push("  smmmNNNNNNNNNNNNNNNNNNNNNNNNNNNNNmmms  ".to_string());
