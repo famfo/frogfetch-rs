@@ -56,8 +56,8 @@ pub fn get_info() {
         .trim()
         .to_string();
 
-    // Get the uptime using wmic path Win32_OperatingSystem get LastBootUpTime
-    let uptime = String::from_utf8(
+    // Get the boot time using wmic path Win32_OperatingSystem get LastBootUpTime
+    let boot_time = String::from_utf8(
         Command::new("wmic")
             .arg("path")
             .arg("Win32_OperatingSystem")
@@ -71,21 +71,42 @@ pub fn get_info() {
         .trim()
         .to_string();
 
-    let boot_year = &uptime[..4];
-    let boot_month = &uptime[4..6];
-    let boot_day = &uptime[6..8];
-    let mut boot_hour: u32 =std::str::FromStr::from_str(&uptime[8..10]).unwrap();
-    let boot_minute = &uptime[10..12];
-    let boot_second = &uptime[12..14];
-    let time_zone = &uptime[21..25];
+    let current_time = &String::from_utf8(
+        Command::new("powershell.exe")
+        .arg("date")
+        .output()
+        .expect("Failed to execute powershell date")
+        .stdout,
+    ).unwrap_or_default()[10..];
+        
+    let current_time = current_time.split_whitespace().collect::<Vec<&str>>();
+    let current_day = &current_time[0][..1];
+    let current_month = &current_time[1];
+    let current_month = match current_month {
+        &"January" => 1,
+        &"Feburary" => 2,
+        &"March" => 3,
+        &"April" => 4,
+        &"May" => 5,
+        &"June" => 6,
+        &"July" => 7,
+        &"August" => 8,
+        &"September" => 9,
+        &"October" => 10,
+        &"November" => 11,
+        &"December" => 12,
+        _ => 0,
+    };
 
-    if time_zone.chars().nth(0) == Some('+') {
-        let offset: u32 = std::str::FromStr::from_str(&time_zone[1..]).unwrap();
-        boot_hour = boot_hour - (offset / 60);
-    } else {
-        let offset: u32 = std::str::FromStr::from_str(&time_zone[1..]).unwrap();
-        boot_hour = boot_hour + (offset / 60);
-    }
+    println!("Current time: {} at {}-{}-{}", current_time[3], current_day, current_month, 0);
+
+    let boot_year = &boot_time[..4];
+    let boot_month = &boot_time[4..6];
+    let boot_day = &boot_time[6..8];
+    let boot_hour: u32 =std::str::FromStr::from_str(&boot_time[8..10]).unwrap();
+    let boot_minute = &boot_time[10..12];
+    let boot_second = &boot_time[12..14];
+    let time_zone = &boot_time[21..25];
 
     let uptime = format!("Boot time: {}:{}:{} at {}-{}-{} (GMT{})", boot_hour, boot_minute, boot_second, boot_day, boot_month, boot_year, time_zone);
 
