@@ -20,8 +20,16 @@ fn main() {
     #[cfg(target_os = "freebsd")]
     os_specific::freebsd::get_info();
 
+    #[cfg(target_os = "macos")]
+    os_specific::macos::get_info();
+
     // TODO: Get it to work on Windows, MacOS, and other BSDs
-    #[cfg(not(any(target_os = "linux", target_os = "android", target_os = "freebsd")))]
+    #[cfg(not(any(
+        target_os = "linux",
+        target_os = "android",
+        target_os = "freebsd",
+        target_os = "macos"
+    )))]
     todo!();
 }
 
