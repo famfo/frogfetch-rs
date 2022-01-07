@@ -147,7 +147,7 @@ pub fn get_info() {
     .to_string();
 
     // Get the total memory in byte using sysctl -n hw.physmem
-    let mut memory: u64 = std::str::FromStr::from_str(
+    let memory: u64 = std::str::FromStr::from_str(
         String::from_utf8(
             Command::new("sysctl")
                 .arg("-n")
