@@ -1,5 +1,10 @@
 [package]
 authors = ["famfo"]
 name = "frogfetch-rs"
-version = "0.1.2"
+version = "0.1.0"
 edition = "2021"
+description = "Neofetch but frogged and in rust"
+homepage = "https://famfo.xyz"
+repository = "https://git.karx.xyz/famfo/frogfetch-rs"
+license = "GPL-3.0-or-later"
+
